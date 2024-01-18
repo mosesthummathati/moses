@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+
+    environment {
+        // Define any environment variables here
+        MAVEN_HOME = tool 'Maven'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    echo 'Building the project...'
+                    sh "${MAVEN_HOME}/bin/mvn clean install"
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    echo 'Running tests...'
+                    sh "${MAVEN_HOME}/bin/mvn test"
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    echo 'Deploying...'
+                    // Add your deployment commands here
+                    // For example, copying artifacts to a server
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline succeeded. Do any post-success tasks here.'
+        }
+        failure {
+            echo 'Pipeline failed. Do any post-failure tasks here.'
+        }
+    }
+}
